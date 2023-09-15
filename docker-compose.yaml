@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  football_api:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+        - ./football_api:/football_api
+    command: bash -c "python -m poetry run python manage.py runserver 0.0.0.0:8000"
