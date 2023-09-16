@@ -4,16 +4,26 @@ LABEL maintainer="cardenasmatias.1990@gmail.com"
 
 ENV PYTHONUNBUFFERED 1
 
+
 RUN apk update && apk add gcc && apk add g++ && apk add libffi-dev \
    && apk add bash && apk add vim
 
-COPY ./poetry.lock ./pyproject.toml ./
-COPY ./football_api /football_api
-WORKDIR /football_api
+
+WORKDIR /usr/football_api
+
+COPY ./football_api ./
+COPY poetry.lock pyproject.toml ./
+
+#RUN #adduser --disabled-password django-user
+
+#RUN chown -R django-user:django-user /home/django-user
+#RUN chown -R django-user:django-user /usr/football_api
+
 EXPOSE 8000
+
+#USER django-user
 
 RUN pip install poetry
 RUN poetry install -vvv --no-root
-RUN adduser --disabled-password --no-create-home django-user
 
-USER django-user
+CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
