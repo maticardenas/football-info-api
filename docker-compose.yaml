@@ -7,4 +7,4 @@ services:
     ports:
       - "8000:8000"
     volumes:
-        - ./football_api:/football_api
+        - .:/usr/football_api
