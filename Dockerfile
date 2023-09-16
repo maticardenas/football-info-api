@@ -14,14 +14,7 @@ WORKDIR /usr/football_api
 COPY ./football_api ./
 COPY poetry.lock pyproject.toml ./
 
-#RUN #adduser --disabled-password django-user
-
-#RUN chown -R django-user:django-user /home/django-user
-#RUN chown -R django-user:django-user /usr/football_api
-
 EXPOSE 8000
-
-#USER django-user
 
 RUN pip install poetry
 RUN poetry install -vvv --no-root
