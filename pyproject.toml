@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "football-bot-api"
+version = "0.1.0"
+description = ""
+authors = ["Matias Cardenas <matias.cardenas@sendcloud.com>"]
+readme = "README.md"
+packages = [{include = "football_bot_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+djangorestframework = "^3.14.0"
+psycopg2-binary = "^2.9.7"
+Django = "^4.2.5"
+black = "^23.9.1"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
+mypy = "^1.5.1"
+psycopg2 = "^2.9.7"
+pytest = "^7.4.2"
+pytest-django = "^4.5.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "football_service.football_api.settings"
