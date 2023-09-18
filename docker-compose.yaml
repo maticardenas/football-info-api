@@ -7,4 +7,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-        - .:/usr/football_api
+        - .:/usr/football-bot-api
+    environment:
+      - DB_HOST=db
+      - DB_NAME=notifier_db
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
