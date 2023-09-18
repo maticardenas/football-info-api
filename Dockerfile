@@ -17,5 +17,3 @@ EXPOSE 8000
 
 RUN pip install poetry
 RUN poetry install -vvv --no-root
-
-CMD ["poetry", "run", "python", "football_service/manage.py", "runserver", "0.0.0.0:8000"]
