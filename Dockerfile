@@ -9,7 +9,7 @@ RUN apk update && apk add gcc && apk add g++ && apk add libffi-dev \
    && apk add bash && apk add vim && \
     apk add --update --no-cache postgresql-client build-base postgresql-dev musl-dev
 
-WORKDIR /usr/football-bot-api
+WORKDIR /usr/football_bot_api
 
 COPY ./ ./
 

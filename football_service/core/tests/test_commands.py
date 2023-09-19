@@ -18,13 +18,13 @@ def test_wait_for_db_ready(capsys):
 
 
 @patch("time.sleep")
-@patch("core.management.commands.wait_for_db.connections")
+@patch("core.management.commands.wait_for_db.Command.check")
 def test_db_not_available_in_first_attempts(
-    mock_connections: MagicMock, mock_sleep: MagicMock
+    mock_check: MagicMock, mock_sleep: MagicMock
 ):
     # given
     command = "wait_for_db"
-    mock_connections.__getitem__.side_effect = [OperationalError] * 2 + [MagicMock]
+    mock_check.side_effect = [OperationalError] * 2 + [MagicMock]
 
     # when
     call_command(command)
