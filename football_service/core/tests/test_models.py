@@ -2,11 +2,6 @@ import pytest
 from django.contrib.auth import get_user_model
 
 
-@pytest.fixture(autouse=True)
-def enable_db_access_for_all_tests(db):
-    pass
-
-
 def test_create_user_with_email_successful():
     # given
     email = "test@example.com"
