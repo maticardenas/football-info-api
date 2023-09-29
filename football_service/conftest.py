@@ -34,6 +34,14 @@ def client():
 
 
 @pytest.fixture
+def user_factory(**params):
+    def user(**params):
+        return get_user_model().objects.create_user(**params)
+
+    return user
+
+
+@pytest.fixture
 def user():
     return get_user_model().objects.create_user("test_user")
 
