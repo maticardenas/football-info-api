@@ -4,6 +4,7 @@ from typing import Callable
 import pytest
 from django.contrib.auth import get_user_model
 from openapi_tester import SchemaTester
+from utils.test_utils.test_client import FootTestClient
 
 CURRENT_PATH = Path().absolute()
 
@@ -27,10 +28,11 @@ def openapi_client_factory() -> Callable:
 
 
 @pytest.fixture
-def client():
-    from rest_framework.test import APIClient
+def client_factory():
+    def client(schema_tester: SchemaTester = None):
+        return FootTestClient(schema_tester=schema_tester)
 
-    return APIClient()
+    return client
 
 
 @pytest.fixture

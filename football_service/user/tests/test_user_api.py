@@ -1,10 +1,31 @@
+from pathlib import Path
+from typing import Callable
+
+import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from openapi_tester.clients import OpenAPIClient
 from rest_framework import status
-from rest_framework.test import APIClient
+
+TESTS_PATH = Path(__file__).parent.absolute()
 
 
-def test_create_user_success(client: APIClient):
+@pytest.fixture
+def users_api_schema() -> Path:
+    return TESTS_PATH.parent.parent / "schemas" / "user" / "openapi.yaml"
+
+
+@pytest.fixture
+def client(
+    schema_tester_factory: Callable,
+    client_factory: Callable,
+    users_api_schema: Path,
+) -> OpenAPIClient:
+    schema_tester = schema_tester_factory(users_api_schema)
+    return client_factory(schema_tester)
+
+
+def test_create_user_success(client: OpenAPIClient):
     # given
     url = reverse("user:user")
     payload = {
@@ -23,7 +44,9 @@ def test_create_user_success(client: APIClient):
     assert "password" not in response.data
 
 
-def test_create_user_already_exists(client: APIClient, user_factory: get_user_model()):
+def test_create_user_already_exists(
+    client: OpenAPIClient, user_factory: get_user_model()
+):
     # given
     url = reverse("user:user")
     payload = {
@@ -41,7 +64,7 @@ def test_create_user_already_exists(client: APIClient, user_factory: get_user_mo
     assert "password" not in response.data
 
 
-def test_password_too_short(client: APIClient):
+def test_password_too_short(client: OpenAPIClient):
     # given
     url = reverse("user:user")
     payload = {
@@ -59,7 +82,7 @@ def test_password_too_short(client: APIClient):
     assert user_exists is False
 
 
-def test_get_users(client: APIClient, logged_in_admin_user: get_user_model()):
+def test_get_users(client: OpenAPIClient, logged_in_admin_user: get_user_model()):
     # given
     url = reverse("user:user")
     get_user_model().objects.create_user(
@@ -78,7 +101,7 @@ def test_get_users(client: APIClient, logged_in_admin_user: get_user_model()):
     assert response.data[1]["email"] == "another_no_admin_user@example.com"
 
 
-def test_get_users_no_admin(client: APIClient, logged_in_user: get_user_model()):
+def test_get_users_no_admin(client: OpenAPIClient, logged_in_user: get_user_model()):
     # given
     url = reverse("user:user")
     get_user_model().objects.create_user(
@@ -96,7 +119,7 @@ def test_get_users_no_admin(client: APIClient, logged_in_user: get_user_model())
     assert response.data[0]["email"] == logged_in_user.email
 
 
-def test_retrieve_user_unauthorized(client: APIClient):
+def test_retrieve_user_unauthorized(client: OpenAPIClient):
     # given
     url = reverse("user:me")
 
@@ -107,7 +130,7 @@ def test_retrieve_user_unauthorized(client: APIClient):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_retrieve_user(client: APIClient, logged_in_user: get_user_model()):
+def test_retrieve_user(client: OpenAPIClient, logged_in_user: get_user_model()):
     # given
     url = reverse("user:me")
     client.force_authenticate(user=logged_in_user)
@@ -122,11 +145,12 @@ def test_retrieve_user(client: APIClient, logged_in_user: get_user_model()):
 
 
 def test_retrieve_user_method_not_allowed(
-    client: APIClient, logged_in_user: get_user_model()
+    client: OpenAPIClient, logged_in_user: get_user_model()
 ):
     # given
     url = reverse("user:me")
     client.force_authenticate(user=logged_in_user)
+    client.openapi_validate = False
 
     # when
     response = client.post(url)
