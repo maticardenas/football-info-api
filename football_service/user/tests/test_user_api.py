@@ -35,7 +35,7 @@ def test_create_user_success(client: OpenAPIClient):
     }
 
     # when
-    response = client.post(url, payload)
+    response = client.post(url, json=payload)
 
     # then
     assert response.status_code == status.HTTP_201_CREATED
